@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="notification_background">#FFFFFF</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#757575</color>
+    <color name="progress_color">#FF9800</color>
+    <color name="progress_text">#424242</color>
+    <color name="time_text">#9E9E9E</color>
+</resources>
