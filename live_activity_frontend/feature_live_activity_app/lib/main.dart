@@ -1,4 +1,6 @@
 // main.dart
+import 'package:feature_live_activity_app/src/model/live_notification_model.dart';
+import 'package:feature_live_activity_app/src/service/live_notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
@@ -200,72 +202,5 @@ class _LiveActivityScreenState extends State<LiveActivityScreen> {
         ),
       ),
     );
-  }
-}
-
-// lib/src/model/live_notification_model.dart
-class LiveNotificationModel {
-  final int progress;
-  final int minutesToDelivery;
-
-  LiveNotificationModel({
-    required this.progress,
-    required this.minutesToDelivery,
-  });
-
-  Map<String, dynamic> toJson() {
-    return {'progress': progress, 'minutesToDelivery': minutesToDelivery};
-  }
-
-  factory LiveNotificationModel.fromJson(Map<String, dynamic> json) {
-    return LiveNotificationModel(
-      progress: json['progress'] ?? 0,
-      minutesToDelivery: json['minutesToDelivery'] ?? 0,
-    );
-  }
-}
-
-// lib/src/service/live_notification_service.dart
-class LiveNotificationService {
-  final MethodChannel _method = const MethodChannel(
-    "androidInteractiveNotifications",
-  );
-
-  Future<void> startNotifications({required LiveNotificationModel data}) async {
-    try {
-      await _method.invokeMethod("startNotifications", data.toJson());
-    } on PlatformException catch (e) {
-      print("Error starting notifications: ${e.message}");
-      throw PlatformException(code: e.code, message: e.message);
-    }
-  }
-
-  Future<void> updateNotifications({
-    required LiveNotificationModel data,
-  }) async {
-    try {
-      await _method.invokeMethod("updateNotifications", data.toJson());
-    } on PlatformException catch (e) {
-      print("Error updating notifications: ${e.message}");
-      throw PlatformException(code: e.code, message: e.message);
-    }
-  }
-
-  Future<void> finishDeliveryNotification() async {
-    try {
-      await _method.invokeMethod("finishDeliveryNotification");
-    } on PlatformException catch (e) {
-      print("Error finishing delivery notification: ${e.message}");
-      throw PlatformException(code: e.code, message: e.message);
-    }
-  }
-
-  Future<void> endNotifications() async {
-    try {
-      await _method.invokeMethod("endNotifications");
-    } on PlatformException catch (e) {
-      print("Error ending notifications: ${e.message}");
-      throw PlatformException(code: e.code, message: e.message);
-    }
   }
 }
