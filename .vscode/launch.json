@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "feature_live_activity_app",
+            "cwd": "live_activity_frontend/feature_live_activity_app",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "feature_live_activity_app (profile mode)",
+            "cwd": "live_activity_frontend/feature_live_activity_app",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "feature_live_activity_app (release mode)",
+            "cwd": "live_activity_frontend/feature_live_activity_app",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}
