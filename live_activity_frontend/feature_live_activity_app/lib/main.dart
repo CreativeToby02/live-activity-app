@@ -179,33 +179,33 @@ class _LiveActivityScreenState extends State<LiveActivityScreen> {
               ),
             ),
             SizedBox(height: 30),
-            // if (!_isDeliveryActive)
-            //   ElevatedButton(
-            //     onPressed: _startDelivery,
-            //     style: ElevatedButton.styleFrom(
-            //       backgroundColor: Colors.lightBlue,
-            //       padding: EdgeInsets.symmetric(vertical: 16),
-            //     ),
-            //     child: Text(
-            //       'Start Delivery Tracking',
-            //       style: TextStyle(fontSize: 18, color: Colors.white),
-            //     ),
-            //   )
-            // else
-            //   ElevatedButton(
-            //     onPressed: _cancelDelivery,
-            //     style: ElevatedButton.styleFrom(
-            //       backgroundColor: Colors.red,
-            //       padding: EdgeInsets.symmetric(vertical: 16),
-            //     ),
-            //     child: Text('Cancel Delivery', style: TextStyle(fontSize: 18)),
-            //   ),
-            // SizedBox(height: 20),
-            // Text(
-            //   'This demo simulates a delivery tracking system with live notifications. When you start tracking, you\'ll see an ongoing notification that updates in real-time.',
-            //   textAlign: TextAlign.center,
-            //   style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-            // ),
+            if (!_isDeliveryActive)
+              ElevatedButton(
+                onPressed: _startDelivery,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.lightBlue,
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: Text(
+                  'Start Delivery Tracking',
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+              )
+            else
+              ElevatedButton(
+                onPressed: _cancelDelivery,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: Text('Cancel Delivery', style: TextStyle(fontSize: 18)),
+              ),
+            SizedBox(height: 20),
+            Text(
+              'This demo simulates a delivery tracking system with live notifications. When you start tracking, you\'ll see an ongoing notification that updates in real-time.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+            ),
           ],
         ),
       ),
