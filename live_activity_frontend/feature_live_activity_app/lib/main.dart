@@ -1,9 +1,9 @@
 // main.dart
+import 'dart:async';
+
 import 'package:feature_live_activity_app/src/model/live_notification_model.dart';
 import 'package:feature_live_activity_app/src/service/live_notification_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'dart:async';
 
 void main() {
   runApp(MyApp());
@@ -116,6 +116,14 @@ class _LiveActivityScreenState extends State<LiveActivityScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((val) {
+      _startDelivery();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -171,33 +179,33 @@ class _LiveActivityScreenState extends State<LiveActivityScreen> {
               ),
             ),
             SizedBox(height: 30),
-            if (!_isDeliveryActive)
-              ElevatedButton(
-                onPressed: _startDelivery,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.lightBlue,
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: Text(
-                  'Start Delivery Tracking',
-                  style: TextStyle(fontSize: 18, color: Colors.white),
-                ),
-              )
-            else
-              ElevatedButton(
-                onPressed: _cancelDelivery,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: Text('Cancel Delivery', style: TextStyle(fontSize: 18)),
-              ),
-            SizedBox(height: 20),
-            Text(
-              'This demo simulates a delivery tracking system with live notifications. When you start tracking, you\'ll see an ongoing notification that updates in real-time.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-            ),
+            // if (!_isDeliveryActive)
+            //   ElevatedButton(
+            //     onPressed: _startDelivery,
+            //     style: ElevatedButton.styleFrom(
+            //       backgroundColor: Colors.lightBlue,
+            //       padding: EdgeInsets.symmetric(vertical: 16),
+            //     ),
+            //     child: Text(
+            //       'Start Delivery Tracking',
+            //       style: TextStyle(fontSize: 18, color: Colors.white),
+            //     ),
+            //   )
+            // else
+            //   ElevatedButton(
+            //     onPressed: _cancelDelivery,
+            //     style: ElevatedButton.styleFrom(
+            //       backgroundColor: Colors.red,
+            //       padding: EdgeInsets.symmetric(vertical: 16),
+            //     ),
+            //     child: Text('Cancel Delivery', style: TextStyle(fontSize: 18)),
+            //   ),
+            // SizedBox(height: 20),
+            // Text(
+            //   'This demo simulates a delivery tracking system with live notifications. When you start tracking, you\'ll see an ongoing notification that updates in real-time.',
+            //   textAlign: TextAlign.center,
+            //   style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+            // ),
           ],
         ),
       ),
