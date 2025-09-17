@@ -29,10 +29,10 @@ class LiveActivityScreen extends StatefulWidget {
   const LiveActivityScreen({super.key});
 
   @override
-  _LiveActivityScreenState createState() => _LiveActivityScreenState();
+  LiveActivityScreenState createState() => LiveActivityScreenState();
 }
 
-class _LiveActivityScreenState extends State<LiveActivityScreen> {
+class LiveActivityScreenState extends State<LiveActivityScreen> {
   final LiveNotificationService _notificationService =
       LiveNotificationService();
 
