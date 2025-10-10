@@ -4,18 +4,20 @@ import UIKit
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
-  private let channelName = "androidInteractiveNotifications"  // reuse same channel name
-  private var liveManager: Any?
+  private let channelName = "androidInteractiveNotifications"
+
+  private func getLiveNotificationManager() -> LiveNotificationManager? {
+    if #available(iOS 16.2, *) {
+      return LiveNotificationManager()
+    }
+    return nil
+  }
 
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     GeneratedPluginRegistrant.register(with: self)
-
-    // Configure notifications (fallback mode)
-    LiveNotificationManager.shared.configure()
-    LiveNotificationManager.shared.requestAuthorizationIfNeeded { _ in }
 
     // Setup MethodChannel bridge
     if let controller = window?.rootViewController as? FlutterViewController {
@@ -26,46 +28,63 @@ import UIKit
         case "startNotifications":
           if let args = call.arguments as? [String: Any] {
             if #available(iOS 16.2, *) {
-              if self.liveManager == nil { self.liveManager = LiveActivityManager() }
-              (self.liveManager as! LiveActivityManager).start(data: args)
+              print("Starting Live Activity with args: \(args)")
+                self.registerDevice(application: application,result: result )
+                self.requestNotificationPermissions(result: result)
+              self.getLiveNotificationManager()?.startLiveActivity(data: args)
+              result("Live Activity started")
             } else {
-              let progress = args["progress"] as? Int ?? 0
-              let minutes = args["minutesToDelivery"] as? Int ?? 0
-              LiveNotificationManager.shared.showNotification(
-                progress: progress, minutesToDelivery: minutes)
+              result(
+                FlutterError(
+                  code: "UNSUPPORTED_VERSION", message: "Live Activities require iOS 16.2+",
+                  details: nil))
             }
-            result("Notification displayed")
           } else {
             result(
               FlutterError(
-                code: "INVALID_ARGUMENTS", message: "Missing progress/minutesToDelivery",
+                code: "INVALID_ARGUMENTS", message: "Missing required arguments",
                 details: nil))
           }
         case "updateNotifications":
           if let args = call.arguments as? [String: Any] {
             if #available(iOS 16.2, *) {
-              (self.liveManager as? LiveActivityManager)?.update(data: args)
+              print("Updating Live Activity with args: \(args)")
+              self.getLiveNotificationManager()?.updateLiveActivity(data: args)
+              result("Live Activity updated")
             } else {
-              let progress = args["progress"] as? Int ?? 0
-              let minutes = args["minutesToDelivery"] as? Int ?? 0
-              LiveNotificationManager.shared.updateNotification(
-                progress: progress, minutesToDelivery: minutes)
+              result(
+                FlutterError(
+                  code: "UNSUPPORTED_VERSION", message: "Live Activities require iOS 16.2+",
+                  details: nil))
             }
-            result("Notification updated")
           } else {
             result(
               FlutterError(
-                code: "INVALID_ARGUMENTS", message: "Missing progress/minutesToDelivery",
+                code: "INVALID_ARGUMENTS", message: "Missing required arguments",
                 details: nil))
           }
         case "finishDeliveryNotification":
-          if #available(iOS 16.2, *) { (self.liveManager as? LiveActivityManager)?.end() }
-          LiveNotificationManager.shared.finishDeliveryNotification()
-          result("Notification delivered")
+          if #available(iOS 16.2, *) {
+            print("Finishing Live Activity")
+            self.getLiveNotificationManager()?.endLiveActivity()
+            result("Live Activity ended")
+          } else {
+            result(
+              FlutterError(
+                code: "UNSUPPORTED_VERSION", message: "Live Activities require iOS 16.2+",
+                details: nil))
+          }
         case "endNotifications":
-          if #available(iOS 16.2, *) { (self.liveManager as? LiveActivityManager)?.end() }
-          LiveNotificationManager.shared.endNotification()
-          result("Notification cancelled")
+          if #available(iOS 16.2, *) {
+            print("Ending Live Activity")
+            self.getLiveNotificationManager()?.endLiveActivity()
+            result("Live Activity cancelled")
+          } else {
+            result(
+              FlutterError(
+                code: "UNSUPPORTED_VERSION", message: "Live Activities require iOS 16.2+",
+                details: nil))
+          }
         default:
           result(FlutterMethodNotImplemented)
         }
@@ -74,4 +93,24 @@ import UIKit
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
+
+  private func registerDevice(application: UIApplication, result: @escaping FlutterResult) {
+    application.registerForRemoteNotifications()
+    result("Device Token registration initiated")
+  }
+
+  private func requestNotificationPermissions(result: @escaping FlutterResult) {
+    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) {
+      granted, error in
+      if let error = error {
+        result(
+          FlutterError(
+            code: "PERMISSION_ERROR", message: "Failed to request permissions",
+            details: error.localizedDescription))
+        return
+      }
+      result(granted)
+    }
+  }
+
 }

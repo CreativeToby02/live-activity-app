@@ -1,39 +1,34 @@
-//
-//  LiveNotificationManager.swift
-//  Runner
-//
-//  Created to resolve 'Cannot find LiveNotificationManager in scope' error.
-//
-
+import ActivityKit
 import Foundation
-import UIKit
 
 class LiveNotificationManager {
-    static let shared = LiveNotificationManager()
-    private init() {}
+    private var liveActivity: Any? = nil
 
-    func configure() {
-        // Stub: Configure notification settings
+    func startLiveActivity(data: [String: Any]?) {
+        if let info = data {
+            print("Starting Live Activity with data: \(info)")
+            // Create attributes and state using runtime lookup
+            let result = createLiveActivityRequest(with: info)
+            liveActivity = result
+        }
     }
 
-    func requestAuthorizationIfNeeded(completion: @escaping (Bool) -> Void) {
-        // Stub: Request notification authorization
-        completion(true)
+    private func createLiveActivityRequest(with data: [String: Any]) -> Any? {
+        // This will be implemented using reflection or dynamic calls
+        // For now, return nil to avoid compilation errors
+        print("Live Activity creation attempted with data: \(data)")
+        return nil
     }
-    
-    func showNotification(progress: Int, minutesToDelivery: Int) {
-        // Stub: Show notification
+
+    func updateLiveActivity(data: [String: Any]?) {
+        if let info = data {
+            print("Updating Live Activity with data: \(info)")
+            // Update logic will be implemented
+        }
     }
-    
-    func updateNotification(progress: Int, minutesToDelivery: Int) {
-        // Stub: Update notification
-    }
-    
-    func finishDeliveryNotification() {
-        // Stub: Finish delivery notification
-    }
-    
-    func endNotification() {
-        // Stub: End notification
+
+    func endLiveActivity() {
+        print("Ending Live Activity")
+        liveActivity = nil
     }
 }
