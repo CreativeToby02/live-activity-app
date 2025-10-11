@@ -1,34 +1,54 @@
 import ActivityKit
 import Foundation
 
+@available(iOS 16.2, *)
+struct LiveActivityAttributes: ActivityAttributes {
+    public struct ContentState: Codable, Hashable {
+        var driverCode: String
+        var carModel: String
+        var minutesToArrive: Int
+        var carArriveProgress: Int
+    }
+}
+
+@available(iOS 16.2, *)
 class LiveNotificationManager {
-    private var liveActivity: Any? = nil
+    private var liveActivity: Activity<LiveActivityAttributes>? = nil
 
     func startLiveActivity(data: [String: Any]?) {
+        let attributes = LiveActivityAttributes()
         if let info = data {
-            print("Starting Live Activity with data: \(info)")
-            // Create attributes and state using runtime lookup
-            let result = createLiveActivityRequest(with: info)
-            liveActivity = result
+            let state = LiveActivityAttributes.ContentState(
+                driverCode: info["driverCode"] as? String ?? "",
+                carModel: info["carModel"] as? String ?? "",
+                minutesToArrive: info["minutesToArrive"] as? Int ?? 0,
+                carArriveProgress: info["carArriveProgress"] as? Int ?? 0
+            )
+            Task {
+                liveActivity = try? Activity<LiveActivityAttributes>.request(
+                    attributes: attributes, content: .init(state: state, staleDate: nil))
+            }
         }
-    }
-
-    private func createLiveActivityRequest(with data: [String: Any]) -> Any? {
-        // This will be implemented using reflection or dynamic calls
-        // For now, return nil to avoid compilation errors
-        print("Live Activity creation attempted with data: \(data)")
-        return nil
     }
 
     func updateLiveActivity(data: [String: Any]?) {
         if let info = data {
-            print("Updating Live Activity with data: \(info)")
-            // Update logic will be implemented
+            let updatedState = LiveActivityAttributes.ContentState(
+                driverCode: info["driverCode"] as? String ?? "",
+                carModel: info["carModel"] as? String ?? "",
+                minutesToArrive: info["minutesToArrive"] as? Int ?? 0,
+                carArriveProgress: info["carArriveProgress"] as? Int ?? 0
+            )
+
+            Task {
+                await liveActivity?.update(using: updatedState)
+            }
         }
     }
 
     func endLiveActivity() {
-        print("Ending Live Activity")
-        liveActivity = nil
+        Task {
+            await self.liveActivity?.end(dismissalPolicy: .immediate)
+        }
     }
 }

@@ -6,7 +6,7 @@ import UIKit
 @objc class AppDelegate: FlutterAppDelegate {
   private let channelName = "androidInteractiveNotifications"
 
-  private func getLiveNotificationManager() -> LiveNotificationManager? {
+  private func getLiveNotificationManager() -> Any? {
     if #available(iOS 16.2, *) {
       return LiveNotificationManager()
     }
@@ -29,9 +29,10 @@ import UIKit
           if let args = call.arguments as? [String: Any] {
             if #available(iOS 16.2, *) {
               print("Starting Live Activity with args: \(args)")
-                self.registerDevice(application: application,result: result )
-                self.requestNotificationPermissions(result: result)
-              self.getLiveNotificationManager()?.startLiveActivity(data: args)
+              self.registerDevice(application: application, result: result)
+              self.requestNotificationPermissions(result: result)
+              (self.getLiveNotificationManager() as? LiveNotificationManager)?.startLiveActivity(
+                data: args)
               result("Live Activity started")
             } else {
               result(
@@ -49,7 +50,8 @@ import UIKit
           if let args = call.arguments as? [String: Any] {
             if #available(iOS 16.2, *) {
               print("Updating Live Activity with args: \(args)")
-              self.getLiveNotificationManager()?.updateLiveActivity(data: args)
+              (self.getLiveNotificationManager() as? LiveNotificationManager)?.updateLiveActivity(
+                data: args)
               result("Live Activity updated")
             } else {
               result(
@@ -66,7 +68,7 @@ import UIKit
         case "finishDeliveryNotification":
           if #available(iOS 16.2, *) {
             print("Finishing Live Activity")
-            self.getLiveNotificationManager()?.endLiveActivity()
+            (self.getLiveNotificationManager() as? LiveNotificationManager)?.endLiveActivity()
             result("Live Activity ended")
           } else {
             result(
@@ -77,7 +79,7 @@ import UIKit
         case "endNotifications":
           if #available(iOS 16.2, *) {
             print("Ending Live Activity")
-            self.getLiveNotificationManager()?.endLiveActivity()
+            (self.getLiveNotificationManager() as? LiveNotificationManager)?.endLiveActivity()
             result("Live Activity cancelled")
           } else {
             result(
