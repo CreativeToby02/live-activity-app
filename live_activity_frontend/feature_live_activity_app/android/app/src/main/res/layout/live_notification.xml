@@ -8,10 +8,10 @@
 
     <ImageView
         android:id="@+id/image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginEnd="16dp"
-        android:src="@drawable/delivery1"
+        android:src="@drawable/rider_logo"
         android:scaleType="centerCrop" />
 
     <LinearLayout
@@ -38,40 +38,71 @@
             android:textColor="@color/secondary_text"
             android:layout_marginTop="4dp" />
 
-        <LinearLayout
+        <!-- NEW: Bitmap-based progress with icon -->
+        <ImageView
+            android:id="@+id/progress_with_icon"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="4dp"
+            android:scaleType="fitXY"
+            android:visibility="gone" />
+
+        <!-- OLD: Keep for fallback, but will be hidden -->
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp"
-            android:gravity="center_vertical">
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="4dp">
 
             <ProgressBar
                 android:id="@+id/progress"
                 style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                android:progressTint="@color/progress_color" />
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:progressDrawable="@drawable/progress_bar_drawable"
+                android:minHeight="8dp"
+                android:maxHeight="8dp"
+                android:layout_gravity="center_vertical" />
+
+            <ImageView
+                android:id="@+id/progress_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_delivery_truck"
+                android:layout_gravity="center_vertical|start"
+                android:elevation="2dp"
+                android:scaleType="centerInside" />
+
+        </FrameLayout>
+
+        <!-- Progress percentage and time container -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="1dp">
 
             <TextView
                 android:id="@+id/progress_text"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="0%"
                 android:textSize="12sp"
                 android:textColor="@color/progress_text" />
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/minutes_to_delivery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="30 minutes"
+                android:textSize="12sp"
+                android:textColor="@color/time_text"
+                android:drawableStart="@drawable/ic_clock"
+                android:drawablePadding="4dp" />
 
-        <TextView
-            android:id="@+id/minutes_to_delivery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="30 minutes"
-            android:textSize="12sp"
-            android:textColor="@color/time_text"
-            android:layout_marginTop="4dp" />
+        </LinearLayout>
 
     </LinearLayout>
 
