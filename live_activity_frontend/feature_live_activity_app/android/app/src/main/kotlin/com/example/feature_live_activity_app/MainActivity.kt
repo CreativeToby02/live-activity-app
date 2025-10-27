@@ -15,7 +15,7 @@ class MainActivity: FlutterActivity() {
     } else {
         arrayOf()
     }
-    private val flutterChannel = "androidInteractiveNotifications"
+    private val flutterChannel = "live_activity_channel_name"
     
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)

@@ -1,17 +1,3 @@
-// import Flutter
-// import UIKit
-
-// @main
-// @objc class AppDelegate: FlutterAppDelegate {
-//   override func application(
-//     _ application: UIApplication,
-//     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
-//   ) -> Bool {
-//     GeneratedPluginRegistrant.register(with: self)
-//     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
-//   }
-// }
-
 
 import Flutter
 import UIKit
@@ -28,7 +14,7 @@ import ActivityKit
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         let controller = window?.rootViewController as! FlutterViewController
-        let channel = FlutterMethodChannel(name: "com.example.ios_dybamic_island_flutter", binaryMessenger: controller.binaryMessenger)
+        let channel = FlutterMethodChannel(name: "live_activity_channel_name", binaryMessenger: controller.binaryMessenger)
 
         channel.setMethodCallHandler { [weak self] call, result in
             switch call.method {

@@ -11,7 +11,9 @@ import SwiftUI
 @main
 struct DeliveryActivityEBundle: WidgetBundle {
     var body: some Widget {
-        DeliveryActivityE()
-        DeliveryActivityELiveActivity()
+        StartRidePromoWidget()
+        ComfortPromoWidget()
+        ReferFriendPromoWidget()
+        DeliveryLiveActivityELiveActivity()
     }
 }

@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 class LiveNotificationService {
   final MethodChannel _method = const MethodChannel(
-    "androidInteractiveNotifications",
+    "live_activity_channel_name",
   );
 
   Future<void> startNotifications({required LiveNotificationModel data}) async {
