@@ -8,14 +8,14 @@
         android:icon="@mipmap/ic_launcher">
 
         <activity
-            android:name="com.example.feature_live_activity_app.ComposeRenderActivity"
+            android:name=".DeliveryLiveActivity"
             android:exported="false"
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
             android:excludeFromRecents="true"
             android:taskAffinity=""
-
             android:launchMode="singleTask"
-            tools:ignore="MissingClass" />
-
+            android:showOnLockScreen="true"
+            android:turnScreenOn="true" />
 
         <activity
             android:name=".MainActivity"

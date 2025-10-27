@@ -22,43 +22,41 @@ class MainActivity: FlutterActivity() {
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, flutterChannel).setMethodCallHandler {
                 call, result ->
             if (call.method == "startNotifications") {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                     val args = call.arguments<Map<String, Any>>()
                     val progress = args?.get("progress") as? Int
                     val minutes = args?.get("minutesToDelivery") as? Int
 
                     if( progress != null && minutes != null){
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            LiveNotificationManager(context).showNotification(progress,minutes)
-                        }
+                        LiveActivityManager(context).startLiveActivity(progress,minutes)
                     }
                 }
-                result.success("Notification displayed")
+                result.success("Live Activity started")
             }
             else if (call.method == "updateNotifications") {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                     val args = call.arguments<Map<String, Any>>()
                     val progress = args?.get("progress") as? Int
                     val minutes = args?.get("minutesToDelivery") as? Int
                     if(progress != null && minutes != null){
-                        LiveNotificationManager(context)
-                            .updateNotification(currentProgress =  progress, minutesToDelivery = minutes)
+                        LiveActivityManager(context)
+                            .updateLiveActivity(currentProgress =  progress, minutesToDelivery = minutes)
                     }
                 }
             }
             else if (call.method == "finishDeliveryNotification") {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    LiveNotificationManager(context)
-                        .finishDeliveryNotification()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    LiveActivityManager(context)
+                        .finishLiveActivity()
                 }
-                result.success("Notification delivered")
+                result.success("Live Activity finished")
             }
             else if (call.method == "endNotifications") {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    LiveNotificationManager(context)
-                        .endNotification()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    LiveActivityManager(context)
+                        .endLiveActivity()
                 }
-                result.success("Notification cancelled")
+                result.success("Live Activity ended")
             }
         }
     }
@@ -68,12 +66,27 @@ class MainActivity: FlutterActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ActivityCompat.requestPermissions(this, permissions, 200)
         }
+
+        // Check if app was opened from notification
+        val fromNotification = intent.getBooleanExtra("from_notification", false)
+        if (fromNotification) {
+            val progress = intent.getIntExtra("progress", 0)
+            val minutes = intent.getIntExtra("minutesToDelivery", 0)
+
+            // Send notification tap info to Flutter
+            flutterEngine?.dartExecutor?.binaryMessenger?.let { messenger ->
+                MethodChannel(messenger, flutterChannel).invokeMethod("notificationTapped", mapOf(
+                    "progress" to progress,
+                    "minutesToDelivery" to minutes
+                ))
+            }
+        }
     }
 
     override fun onStop() {
         super.onStop()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            LiveNotificationManager(context).endNotification()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            LiveActivityManager(context).endLiveActivity()
         }
     }
 }

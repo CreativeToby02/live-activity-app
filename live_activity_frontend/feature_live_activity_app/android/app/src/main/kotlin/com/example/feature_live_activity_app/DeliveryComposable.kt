@@ -23,7 +23,7 @@ fun DeliveryNotificationComposable(progress: Int, minutes: Int) {
     ) {
         Text(text = "Delivery in $minutes minute(s)", fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(8.dp))
-        LinearProgressIndicator(progress = progress / 100f)
+        // LinearProgressIndicator(progress = progress / 100f)
         Spacer(modifier = Modifier.height(4.dp))
         Text(text = "$progress% completed", fontSize = 12.sp)
     }
