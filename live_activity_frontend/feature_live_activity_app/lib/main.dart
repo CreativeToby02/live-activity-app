@@ -1,5 +1,6 @@
 // main.dart
 import 'dart:async';
+
 import 'package:feature_live_activity_app/src/model/live_notification_model.dart';
 import 'package:feature_live_activity_app/src/service/live_notification_service.dart';
 import 'package:flutter/material.dart';
@@ -31,11 +32,11 @@ class LiveActivityScreen extends StatefulWidget {
 class LiveActivityScreenState extends State<LiveActivityScreen> {
   final LiveNotificationService _notificationService =
       LiveNotificationService();
-
   Timer? _timer;
   bool _isDeliveryActive = false;
   int _progress = 0;
-  int _minutesToDelivery = 5;
+  int _minutesToDelivery = 2;
+  int _rideDuration = 2; // Duration in minutes
 
   @override
   void dispose() {
@@ -47,7 +48,7 @@ class LiveActivityScreenState extends State<LiveActivityScreen> {
     setState(() {
       _isDeliveryActive = true;
       _progress = 0;
-      _minutesToDelivery = 5;
+      _minutesToDelivery = _rideDuration;
     });
 
     await _notificationService.startNotifications(
@@ -57,6 +58,10 @@ class LiveActivityScreenState extends State<LiveActivityScreen> {
       ),
     );
 
+    // Calculate progress increment based on duration
+    // Total updates = (_rideDuration * 60) / 2 seconds = _rideDuration * 30
+    double progressIncrement = 100 / (_rideDuration * 30);
+
     _timer = Timer.periodic(Duration(seconds: 2), (timer) async {
       if (_progress >= 100) {
         await _finishDelivery();
@@ -64,8 +69,11 @@ class LiveActivityScreenState extends State<LiveActivityScreen> {
       }
 
       setState(() {
-        _progress += 20;
-        _minutesToDelivery = (5 - (_progress * 5 / 100)).round();
+        _progress = (_progress + progressIncrement).round();
+        if (_progress > 100) _progress = 100;
+
+        // Calculate remaining minutes based on progress
+        _minutesToDelivery = (_rideDuration * (1 - _progress / 100)).round();
         if (_minutesToDelivery < 0) _minutesToDelivery = 0;
       });
 
@@ -100,10 +108,19 @@ class LiveActivityScreenState extends State<LiveActivityScreen> {
     setState(() {
       _isDeliveryActive = false;
       _progress = 0;
-      _minutesToDelivery = 30;
+      _minutesToDelivery = _rideDuration;
     });
 
     await _notificationService.endNotifications();
+  }
+
+  void _setRideDuration(int minutes) {
+    setState(() {
+      _rideDuration = minutes;
+      if (!_isDeliveryActive) {
+        _minutesToDelivery = _rideDuration;
+      }
+    });
   }
 
   @override
