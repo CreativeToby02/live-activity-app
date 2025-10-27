@@ -16,10 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Live Activity Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
       home: LiveActivityScreen(),
     );
   }
@@ -29,17 +26,17 @@ class LiveActivityScreen extends StatefulWidget {
   const LiveActivityScreen({super.key});
 
   @override
-  _LiveActivityScreenState createState() => _LiveActivityScreenState();
+  LiveActivityScreenState createState() => LiveActivityScreenState();
 }
 
-class _LiveActivityScreenState extends State<LiveActivityScreen> {
+class LiveActivityScreenState extends State<LiveActivityScreen> {
   final LiveNotificationService _notificationService =
       LiveNotificationService();
-
   Timer? _timer;
   bool _isDeliveryActive = false;
   int _progress = 0;
-  int _minutesToDelivery = 30;
+  int _minutesToDelivery = 2;
+  int _rideDuration = 2; // Duration in minutes
 
   @override
   void dispose() {
@@ -51,10 +48,9 @@ class _LiveActivityScreenState extends State<LiveActivityScreen> {
     setState(() {
       _isDeliveryActive = true;
       _progress = 0;
-      _minutesToDelivery = 30;
+      _minutesToDelivery = _rideDuration;
     });
 
-    // Start the live notification
     await _notificationService.startNotifications(
       data: LiveNotificationModel(
         progress: _progress,
@@ -62,7 +58,10 @@ class _LiveActivityScreenState extends State<LiveActivityScreen> {
       ),
     );
 
-    // Simulate delivery progress
+    // Calculate progress increment based on duration
+    // Total updates = (_rideDuration * 60) / 2 seconds = _rideDuration * 30
+    double progressIncrement = 100 / (_rideDuration * 30);
+
     _timer = Timer.periodic(Duration(seconds: 2), (timer) async {
       if (_progress >= 100) {
         await _finishDelivery();
@@ -70,12 +69,14 @@ class _LiveActivityScreenState extends State<LiveActivityScreen> {
       }
 
       setState(() {
-        _progress += 5;
-        _minutesToDelivery = (30 - (_progress * 30 / 100)).round();
+        _progress = (_progress + progressIncrement).round();
+        if (_progress > 100) _progress = 100;
+
+        // Calculate remaining minutes based on progress
+        _minutesToDelivery = (_rideDuration * (1 - _progress / 100)).round();
         if (_minutesToDelivery < 0) _minutesToDelivery = 0;
       });
 
-      // Update the notification
       await _notificationService.updateNotifications(
         data: LiveNotificationModel(
           progress: _progress,
@@ -94,10 +95,8 @@ class _LiveActivityScreenState extends State<LiveActivityScreen> {
       _minutesToDelivery = 0;
     });
 
-    // Show delivery finished notification
     await _notificationService.finishDeliveryNotification();
 
-    // Auto dismiss after 5 seconds
     Timer(Duration(seconds: 5), () async {
       await _notificationService.endNotifications();
     });
@@ -109,10 +108,19 @@ class _LiveActivityScreenState extends State<LiveActivityScreen> {
     setState(() {
       _isDeliveryActive = false;
       _progress = 0;
-      _minutesToDelivery = 30;
+      _minutesToDelivery = _rideDuration;
     });
 
     await _notificationService.endNotifications();
+  }
+
+  void _setRideDuration(int minutes) {
+    setState(() {
+      _rideDuration = minutes;
+      if (!_isDeliveryActive) {
+        _minutesToDelivery = _rideDuration;
+      }
+    });
   }
 
   @override
@@ -127,85 +135,164 @@ class _LiveActivityScreenState extends State<LiveActivityScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Live Activity Demo'),
-        backgroundColor: Colors.teal,
+        title: Text('Delivery Tracker'),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+        elevation: 0,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Card(
-              elevation: 4,
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  children: [
-                    Icon(Icons.local_shipping, size: 60, color: Colors.teal),
-                    SizedBox(height: 16),
-                    Text(
-                      'Delivery Status',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+            // Delivery Status Card
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 8,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.local_shipping,
+                      size: 40,
+                      color: Colors.blue,
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  Text(
+                    'Delivery Status',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey[800],
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  // Progress Section
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Progress',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          Text(
+                            '$_progress%',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    SizedBox(height: 16),
-                    LinearProgressIndicator(
-                      value: _progress / 100,
-                      backgroundColor: Colors.grey[300],
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      '$_progress% Complete',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      _minutesToDelivery > 0
-                          ? 'Arriving in $_minutesToDelivery ${_minutesToDelivery == 1 ? "minute" : "minutes"}'
-                          : 'Delivered!',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: _minutesToDelivery > 0
-                            ? Colors.blue
-                            : Colors.green,
-                        fontWeight: FontWeight.w500,
+                      SizedBox(height: 8),
+                      LinearProgressIndicator(
+                        value: _progress / 100,
+                        backgroundColor: Colors.grey[200],
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                        borderRadius: BorderRadius.circular(4),
+                        minHeight: 8,
                       ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  // Delivery Time
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: _minutesToDelivery > 0
+                          ? Colors.orange.withOpacity(0.1)
+                          : Colors.green.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                  ],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          _minutesToDelivery > 0
+                              ? Icons.access_time
+                              : Icons.check_circle,
+                          color: _minutesToDelivery > 0
+                              ? Colors.orange
+                              : Colors.green,
+                          size: 20,
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          _minutesToDelivery > 0
+                              ? 'Arriving in $_minutesToDelivery ${_minutesToDelivery == 1 ? "minute" : "minutes"}'
+                              : 'Delivered Successfully!',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: _minutesToDelivery > 0
+                                ? Colors.orange
+                                : Colors.green,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 32),
+            // Action Button
+            SizedBox(
+              width: double.infinity,
+              height: 56,
+              child: ElevatedButton(
+                onPressed: _isDeliveryActive ? _cancelDelivery : _startDelivery,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _isDeliveryActive ? Colors.red : Colors.blue,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 0,
+                ),
+                child: Text(
+                  _isDeliveryActive
+                      ? 'Cancel Delivery'
+                      : 'Start Delivery Tracking',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ),
             ),
-            SizedBox(height: 30),
-            // if (!_isDeliveryActive)
-            //   ElevatedButton(
-            //     onPressed: _startDelivery,
-            //     style: ElevatedButton.styleFrom(
-            //       backgroundColor: Colors.lightBlue,
-            //       padding: EdgeInsets.symmetric(vertical: 16),
-            //     ),
-            //     child: Text(
-            //       'Start Delivery Tracking',
-            //       style: TextStyle(fontSize: 18, color: Colors.white),
-            //     ),
-            //   )
-            // else
-            //   ElevatedButton(
-            //     onPressed: _cancelDelivery,
-            //     style: ElevatedButton.styleFrom(
-            //       backgroundColor: Colors.red,
-            //       padding: EdgeInsets.symmetric(vertical: 16),
-            //     ),
-            //     child: Text('Cancel Delivery', style: TextStyle(fontSize: 18)),
-            //   ),
-            // SizedBox(height: 20),
-            // Text(
-            //   'This demo simulates a delivery tracking system with live notifications. When you start tracking, you\'ll see an ongoing notification that updates in real-time.',
-            //   textAlign: TextAlign.center,
-            //   style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-            // ),
+            SizedBox(height: 24),
+            // Info Text
+            Text(
+              'Live tracking updates will appear in your notifications. '
+              'The delivery simulation updates every 2 seconds.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[600],
+                height: 1.4,
+              ),
+            ),
           ],
         ),
       ),

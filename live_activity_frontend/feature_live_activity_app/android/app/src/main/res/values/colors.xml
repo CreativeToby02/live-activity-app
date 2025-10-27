@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Existing colors (keep your current colors) -->
     <color name="notification_background">#FFFFFF</color>
-    <color name="primary_text">#212121</color>
-    <color name="secondary_text">#757575</color>
-    <color name="progress_color">#2754F5</color>
-    <color name="progress_text">#424242</color>
-    <color name="time_text">#9E9E9E</color>
+    <color name="primary_text">#000000</color>
+    <color name="secondary_text">#666666</color>
+    <color name="progress_text">#888888</color>
+    <color name="time_text">#666666</color>
+    
+    <!-- NEW: Progress bar colors -->
+    <color name="progress_background">#E0E0E0</color>
+    <color name="progress_foreground">#17202A</color>
+    
+    <!-- Alternative color schemes you can use: -->
+    <!-- Blue theme -->
+    <color name="progress_color">#2196F3</color>
+    
+    <!-- Orange theme (delivery/speed) -->
+    <!-- <color name="progress_foreground">#FF9800</color> -->
+    
+    <!-- Green theme (success/on-time) -->
+    <!-- <color name="progress_foreground">#4CAF50</color> -->
 </resources>
