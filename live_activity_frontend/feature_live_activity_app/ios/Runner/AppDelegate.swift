@@ -48,7 +48,7 @@ import ActivityKit
         if ActivityAuthorizationInfo().areActivitiesEnabled {
             let attributes = DeliveryLiveActivityEAttributes()
             let initialContentState = DeliveryLiveActivityEAttributes.ContentState(
-                progress: args["progress"] as? Double ?? 0,
+                progress: args["progress"] as? Int ?? 0,
                 minutesToDelivery: args["minutesToDelivery"] as? Int ?? 1
             )
             do {
@@ -65,7 +65,7 @@ import ActivityKit
 
     func updateLiveActivity(args: [String: Any]) {
         let updatedContentState = DeliveryLiveActivityEAttributes.ContentState(
-            progress: args["progress"] as? Double ?? 0,
+            progress: args["progress"] as? Int ?? 0,
             minutesToDelivery: args["minutesToDelivery"] as? Int ?? 1
         )
         Task {
@@ -75,7 +75,7 @@ import ActivityKit
 
     func endLiveActivity() {
         guard let activity = deliveryActivity else { return }
-        let finalContentState = DeliveryLiveActivityEAttributes.ContentState(progress: 1, minutesToDelivery: 0)
+        let finalContentState = DeliveryLiveActivityEAttributes.ContentState(progress: 100, minutesToDelivery: 0) // Changed from 1 to 100
         Task {
             await activity.end(using: finalContentState, dismissalPolicy: .immediate)
             deliveryActivity = nil

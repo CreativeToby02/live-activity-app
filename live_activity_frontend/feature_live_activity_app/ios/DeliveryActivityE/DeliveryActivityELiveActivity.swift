@@ -12,19 +12,20 @@ import SwiftUI
 // MARK: - Reusable Delivery Progress Card View
 @available(iOS 16.1, *)
 struct DeliveryProgressCard: View {
-    let progress: Double
+    let progress: Int // Now using Int (0-100)
     let minutesToDelivery: Int
     let badgeName: String
     let carName: String
 
-    init(progress: Double, minutesToDelivery: Int, badgeName: String = "rider_logo", carName: String = "moving_car") {
-        self.progress = max(0, min(1, progress))
+    init(progress: Int, minutesToDelivery: Int, badgeName: String = "rider_logo", carName: String = "moving_car") {
+        self.progress = max(0, min(100, progress)) // Clamp to 0-100 range
         self.minutesToDelivery = minutesToDelivery
         self.badgeName = badgeName
         self.carName = carName
     }
 
-    var arrived: Bool { progress >= 1.0 && minutesToDelivery <= 0 }
+    var normalizedProgress: Double { Double(progress) / 100.0 } // Convert to 0.0-1.0 for calculations
+    var arrived: Bool { progress >= 100 || minutesToDelivery <= 0 }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -57,7 +58,7 @@ struct DeliveryProgressCard: View {
                 let width = geo.size.width
                 let barHeight: CGFloat = 8
                 let carWidth: CGFloat = 22
-                let carX = progress * max(0, width - carWidth)
+                let carX = normalizedProgress * max(0, width - carWidth)
 
                 ZStack(alignment: .leading) {
                     // Track
@@ -67,7 +68,8 @@ struct DeliveryProgressCard: View {
                     // Fill
                     Capsule()
                         .fill(LinearGradient(gradient: Gradient(colors: [Color.gray.opacity(0.7), Color.gray.opacity(0.55)]), startPoint: .leading, endPoint: .trailing))
-                        .frame(width: max(progress * width, 6), height: barHeight)
+                        .frame(width: max(normalizedProgress * width, 6), height: barHeight)
+                        .animation(.easeInOut(duration: 0.4), value: normalizedProgress)
                     // Car on top of fill
                     Image(carName)
                         .renderingMode(.original)
@@ -76,6 +78,7 @@ struct DeliveryProgressCard: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: carWidth, height: carWidth)
                         .offset(x: carX)
+                        .animation(.easeInOut(duration: 0.4), value: normalizedProgress)
                         .shadow(color: Color.black.opacity(0.15), radius: 2, y: 1)
                 }
             }
@@ -112,7 +115,7 @@ struct DeliveryProgressCard: View {
 @available(iOS 16.1, *)
 struct DeliveryLiveActivityEAttributes: ActivityAttributes {
     public struct ContentState: Codable, Hashable {
-        var progress: Double
+        var progress: Int // Changed from Double to Int
         var minutesToDelivery: Int
     }
 }
@@ -127,12 +130,12 @@ struct DeliveryLiveActivityELiveActivity: Widget {
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
-                    Image("rider_logo")
-                        .renderingMode(.original)
-                        .resizable()
-                        .antialiased(true)
-                        .frame(width: 28, height: 28)
-                        .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+//                    Image("rider_logo")
+//                        .renderingMode(.original)
+//                        .resizable()
+//                        .antialiased(true)
+//                        .frame(width: 28, height: 28)
+//                        .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
                 }
 
                 DynamicIslandExpandedRegion(.center) {
@@ -141,21 +144,7 @@ struct DeliveryLiveActivityELiveActivity: Widget {
                 }
 
                 DynamicIslandExpandedRegion(.trailing) {
-                    VStack(alignment: .trailing, spacing: 4) {
-                        let mins = max(1, context.state.minutesToDelivery)
-                        HStack(spacing: 4) {
-                            Image(systemName: "clock")
-                                .font(.caption2)
-                            Text("\(mins)m")
-                                .font(.caption.bold())
-                        }
-                        .foregroundStyle(.secondary)
-
-                        let pct = Int(max(0, min(1, context.state.progress)) * 100)
-                        Text("\(pct)%")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                    }
+     
                 }
 
                 DynamicIslandExpandedRegion(.bottom) { }
@@ -168,13 +157,13 @@ struct DeliveryLiveActivityELiveActivity: Widget {
                 let mins = max(1, context.state.minutesToDelivery)
                 Text("\(mins)m")
                     .font(.caption.bold())
-                    .foregroundColor(context.state.progress > 0.9 ? Color.red : Color.blue)
+                    .foregroundColor(context.state.progress > 90 ? Color.red : Color.blue)
                     .animation(.easeInOut, value: context.state.progress)
             } minimal: {
                 let mins = max(1, context.state.minutesToDelivery)
                 Text("\(mins)m")
                     .font(.caption2.bold())
-                    .foregroundColor(context.state.progress > 0.9 ? Color.red : Color.blue)
+                    .foregroundColor(context.state.progress > 90 ? Color.red : Color.blue)
                     .animation(.easeInOut, value: context.state.progress)
             }
             .widgetURL(URL(string: "http://www.apple.com"))
@@ -193,11 +182,11 @@ extension DeliveryLiveActivityEAttributes {
 @available(iOS 16.1, *)
 extension DeliveryLiveActivityEAttributes.ContentState {
     fileprivate static var typical: DeliveryLiveActivityEAttributes.ContentState {
-        DeliveryLiveActivityEAttributes.ContentState(progress: 0.6, minutesToDelivery: 8)
+        DeliveryLiveActivityEAttributes.ContentState(progress: 60, minutesToDelivery: 8) // Changed from 0.6 to 60
     }
     
     fileprivate static var almostThere: DeliveryLiveActivityEAttributes.ContentState {
-        DeliveryLiveActivityEAttributes.ContentState(progress: 0.95, minutesToDelivery: 1)
+        DeliveryLiveActivityEAttributes.ContentState(progress: 95, minutesToDelivery: 1) // Changed from 0.95 to 95
     }
 }
 
