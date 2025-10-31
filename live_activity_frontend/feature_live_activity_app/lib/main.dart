@@ -30,8 +30,7 @@ class LiveActivityScreen extends StatefulWidget {
 }
 
 class LiveActivityScreenState extends State<LiveActivityScreen> {
-  final LiveNotificationService _notificationService =
-      LiveNotificationService();
+  final LiveNotificationService activityService = LiveNotificationService();
   Timer? _timer;
   bool _isDeliveryActive = false;
   int _progress = 0;
@@ -51,7 +50,7 @@ class LiveActivityScreenState extends State<LiveActivityScreen> {
       _minutesToDelivery = _rideDuration;
     });
 
-    await _notificationService.startNotifications(
+    await activityService.startNotifications(
       data: LiveNotificationModel(
         progress: _progress,
         minutesToDelivery: _minutesToDelivery,
@@ -77,7 +76,7 @@ class LiveActivityScreenState extends State<LiveActivityScreen> {
         if (_minutesToDelivery < 0) _minutesToDelivery = 0;
       });
 
-      await _notificationService.updateNotifications(
+      await activityService.updateNotifications(
         data: LiveNotificationModel(
           progress: _progress,
           minutesToDelivery: _minutesToDelivery,
@@ -95,10 +94,10 @@ class LiveActivityScreenState extends State<LiveActivityScreen> {
       _minutesToDelivery = 0;
     });
 
-    await _notificationService.finishDeliveryNotification();
+    await activityService.finishDeliveryNotification();
 
     Timer(Duration(seconds: 5), () async {
-      await _notificationService.endNotifications();
+      await activityService.endNotifications();
     });
   }
 
@@ -111,7 +110,7 @@ class LiveActivityScreenState extends State<LiveActivityScreen> {
       _minutesToDelivery = _rideDuration;
     });
 
-    await _notificationService.endNotifications();
+    await activityService.endNotifications();
   }
 
   @override
