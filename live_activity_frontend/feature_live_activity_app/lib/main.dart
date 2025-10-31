@@ -36,7 +36,7 @@ class LiveActivityScreenState extends State<LiveActivityScreen> {
   bool _isDeliveryActive = false;
   int _progress = 0;
   int _minutesToDelivery = 2;
-  int _rideDuration = 2; // Duration in minutes
+  final int _rideDuration = 2; // Duration in minutes
 
   @override
   void dispose() {
@@ -112,15 +112,6 @@ class LiveActivityScreenState extends State<LiveActivityScreen> {
     });
 
     await _notificationService.endNotifications();
-  }
-
-  void _setRideDuration(int minutes) {
-    setState(() {
-      _rideDuration = minutes;
-      if (!_isDeliveryActive) {
-        _minutesToDelivery = _rideDuration;
-      }
-    });
   }
 
   @override
