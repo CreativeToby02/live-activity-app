@@ -436,3 +436,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ---
 
 **Note**: This project demonstrates advanced cross-platform integration techniques for Live Activities. The implementation provides a solid foundation for production applications requiring real-time notifications and Live Activity features across both major mobile platforms.
+# FlutterByte2025-Live-Acitivity-for-Android-and-iOS-flutter
