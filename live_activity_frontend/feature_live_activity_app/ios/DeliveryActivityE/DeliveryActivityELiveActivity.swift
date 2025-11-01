@@ -31,19 +31,7 @@ struct DeliveryProgressCard: View {
         VStack(alignment: .leading, spacing: 8) {
             // Header
             HStack(alignment: .center, spacing: 12) {
-                // Use moving_car as rider logo for now (both images exist)
-                Image("moving_car")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 32, height: 32)
-                    .renderingMode(.template)
-                    .foregroundColor(.white)
-                    .background(
-                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .fill(Color.gray.opacity(0.1))
-                    )
-                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-
+            
                 VStack(alignment: .leading, spacing: 2) {
                     Text(arrived ? "Delivery Arrived! 🎉" : "Delivering in")
                         .font(.headline)
@@ -74,11 +62,11 @@ struct DeliveryProgressCard: View {
                         .animation(.easeInOut(duration: 0.4), value: normalizedProgress)
                     // Car on top of fill
                     Image(carName)
-                        .resizable()
                         .renderingMode(.template)
-                        .foregroundColor(.white)
+                        .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: carWidth, height: carWidth)
+                        .foregroundColor(.white)
                         .offset(x: carX)
                         .animation(.easeInOut(duration: 0.4), value: normalizedProgress)
                         .shadow(color: Color.black.opacity(0.15), radius: 2, y: 1)
@@ -131,13 +119,7 @@ struct DeliveryLiveActivityELiveActivity: Widget {
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
-                    Image("moving_car")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 28, height: 28)
-                        .renderingMode(.template)
-                        .foregroundColor(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+               
                 }
 
                 DynamicIslandExpandedRegion(.center) {
@@ -145,18 +127,7 @@ struct DeliveryLiveActivityELiveActivity: Widget {
                     VStack(alignment: .leading, spacing: 4) {
                         // Header
                         HStack(alignment: .center, spacing: 8) {
-                            Image("moving_car")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 24, height: 24)
-                                .renderingMode(.template)
-                                .foregroundColor(.white)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 6, style: .continuous)
-                                        .fill(Color.gray.opacity(0.1))
-                                )
-                                .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
-
+                     
                             VStack(alignment: .leading, spacing: 1) {
                                 let arrived = context.state.progress >= 100 || context.state.minutesToDelivery <= 0
                                 Text(arrived ? "Delivery Arrived! 🎉" : "Delivering in")
@@ -189,10 +160,10 @@ struct DeliveryLiveActivityELiveActivity: Widget {
                                     .animation(.easeInOut(duration: 0.4), value: normalizedProgress)
                                 // Car on top of fill
                                 Image("moving_car")
+                                    .renderingMode(.template)
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: carWidth, height: carWidth)
-                                    .renderingMode(.template)
                                     .foregroundColor(.white)
                                     .offset(x: carX)
                                     .animation(.easeInOut(duration: 0.4), value: normalizedProgress)
@@ -223,18 +194,10 @@ struct DeliveryLiveActivityELiveActivity: Widget {
                 }
 
                 DynamicIslandExpandedRegion(.trailing) {
-                    VStack(spacing: 2) {
-                        Text("\(context.state.progress)%")
-                            .font(.caption.bold())
-                            .foregroundStyle(.primary)
-                        Text("Complete")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                    }
                 }
 
                 DynamicIslandExpandedRegion(.bottom) {
-                    EmptyView()
+               
                 }
             } compactLeading: {
                 Image(systemName: "bag.fill")

@@ -34,8 +34,8 @@ class LiveActivityScreenState extends State<LiveActivityScreen> {
   Timer? _timer;
   bool _isDeliveryActive = false;
   int _progress = 0;
-  int _minutesToDelivery = 2;
-  final int _rideDuration = 2; // Duration in minutes
+  int _minutesToDelivery = 1;
+  final int _rideDuration = 1; // Duration in minutes
 
   @override
   void dispose() {
