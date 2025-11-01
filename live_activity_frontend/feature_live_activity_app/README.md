@@ -55,7 +55,36 @@ The app simulates a **delivery tracking experience** with real-time progress upd
 
 ## 📸 Screenshots
 
-### Android Implementation
+### 📱 Flutter App Interface
+
+<div align="center">
+
+| Flutter App | Live Activity Progress |
+|-------------|------------------------|
+| ![Flutter Interface](screenshots/Simulator%20Screenshot%20-%20iPhone%2017%20Pro%20-%202025-10-31%20at%2017.05.18.png) | ![Progress Tracking](screenshots/Simulator%20Screenshot%20-%20iPhone%2017%20Pro%20-%202025-10-31%20at%2017.10.11.png) |
+
+</div>
+
+### 🍎 iOS Dynamic Island & Live Activities
+
+<div align="center">
+
+| Dynamic Island Preview | Expanded Live Activity |
+|------------------------|------------------------|
+| ![Dynamic Island Preview](screenshots/step_4_preview_2.png) | ![Expanded View](screenshots/step_4_expanded.png) |
+
+| Live Activity Complete | Lock Screen View |
+|------------------------|------------------|
+| ![Delivery Complete](screenshots/Simulator%20Screenshot%20-%20iPhone%2017%20Pro%20-%202025-10-31%20at%2017.10.24.png) | ![Lock Screen Integration](screenshots/how_to_access_canva.png) |
+
+</div>
+
+### 🤖 Android Rich Notifications
+
+<div align="center">
+
+*Android screenshots coming soon - demonstrating rich notifications with custom RemoteViews layouts*
+
 ```
 ┌─────────────────────────────────────┐
 │ 🚚 Delivery Out for Shipment       │
@@ -67,15 +96,15 @@ The app simulates a **delivery tracking experience** with real-time progress upd
 └─────────────────────────────────────┘
 ```
 
-### iOS Dynamic Island
-```
-Compact: [🛍️] ────── [8m]
-Expanded: 
-┌─ [🚗] Delivery Status ── [75%] ─┐
-│      ===Progress Bar===          │
-│      Time: 3 minutes            │
-└─────────────────────────────────┘
-```
+</div>
+
+### ✨ Key Features Demonstrated
+
+- **Real-time Progress Updates**: Live progress bar with moving car animation
+- **Dynamic Island Integration**: Compact and expanded presentations on iPhone 14 Pro+
+- **Lock Screen Widgets**: Persistent delivery information without opening the app
+- **Cross-Platform Consistency**: Unified experience across Android and iOS
+- **Rich Notifications**: Custom layouts with progress indicators and time estimates
 
 ## 🏗️ Architecture
 
