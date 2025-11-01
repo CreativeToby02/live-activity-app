@@ -17,7 +17,7 @@ struct DeliveryProgressCard: View {
     let badgeName: String
     let carName: String
 
-    init(progress: Int, minutesToDelivery: Int, badgeName: String = "rider_logo", carName: String = "moving_car") {
+    init(progress: Int, minutesToDelivery: Int, badgeName: String = "moving_car", carName: String = "moving_car") {
         self.progress = max(0, min(100, progress)) // Clamp to 0-100 range
         self.minutesToDelivery = minutesToDelivery
         self.badgeName = badgeName
@@ -28,20 +28,10 @@ struct DeliveryProgressCard: View {
     var arrived: Bool { progress >= 100 || minutesToDelivery <= 0 }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 8) {
             // Header
             HStack(alignment: .center, spacing: 12) {
-                Image(badgeName)
-                    .renderingMode(.original)
-                    .resizable()
-                    .antialiased(true)
-                    .frame(width: 36, height: 36)
-                    .background(
-                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .fill(Color.gray.opacity(0.15))
-                    )
-                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-
+            
                 VStack(alignment: .leading, spacing: 2) {
                     Text(arrived ? "Delivery Arrived! 🎉" : "Delivering in")
                         .font(.headline)
@@ -72,11 +62,11 @@ struct DeliveryProgressCard: View {
                         .animation(.easeInOut(duration: 0.4), value: normalizedProgress)
                     // Car on top of fill
                     Image(carName)
-                        .renderingMode(.original)
+                        .renderingMode(.template)
                         .resizable()
-                        .antialiased(true)
                         .aspectRatio(contentMode: .fit)
                         .frame(width: carWidth, height: carWidth)
+                        .foregroundColor(.white)
                         .offset(x: carX)
                         .animation(.easeInOut(duration: 0.4), value: normalizedProgress)
                         .shadow(color: Color.black.opacity(0.15), radius: 2, y: 1)
@@ -85,27 +75,26 @@ struct DeliveryProgressCard: View {
             .frame(height: 22)
 
             // Footer
-            HStack {
-                let pct = Int(progress * 100)
-                Text("\(pct)%")
+            HStack(alignment: .center) {
+                Text("\(progress)%")
                     .font(.footnote)
-                    .foregroundStyle(.secondary)
+                    .foregroundColor(.white)
                 Spacer()
                 HStack(spacing: 6) {
                     Image(systemName: "clock")
                         .font(.footnote)
-                        .foregroundStyle(.secondary)
+                        .foregroundColor(.white)
                     let mins = max(1, minutesToDelivery)
                     Text(mins == 1 ? "1 minute" : "\(mins) minutes")
                         .font(.footnote)
-                        .foregroundStyle(.secondary)
+                        .foregroundColor(.white)
                 }
             }
         }
-        .padding(14)
+        .padding(12)
         .background(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(Color(.systemBackground))
+                .fill(Color.black)
                 .shadow(color: Color.black.opacity(0.06), radius: 6, y: 3)
         )
     }
@@ -130,24 +119,86 @@ struct DeliveryLiveActivityELiveActivity: Widget {
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
-//                    Image("rider_logo")
-//                        .renderingMode(.original)
-//                        .resizable()
-//                        .antialiased(true)
-//                        .frame(width: 28, height: 28)
-//                        .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+               
                 }
 
                 DynamicIslandExpandedRegion(.center) {
-                    DeliveryProgressCard(progress: context.state.progress, minutesToDelivery: context.state.minutesToDelivery)
-                        .padding(.horizontal, 8)
+                    // Compact version for Dynamic Island - less padding and spacing
+                    VStack(alignment: .leading, spacing: 4) {
+                        // Header
+                        HStack(alignment: .center, spacing: 8) {
+                     
+                            VStack(alignment: .leading, spacing: 1) {
+                                let arrived = context.state.progress >= 100 || context.state.minutesToDelivery <= 0
+                                Text(arrived ? "Delivery Arrived! 🎉" : "Delivering in")
+                                    .font(.subheadline.weight(.medium))
+                                    .foregroundStyle(.primary)
+                                Text(arrived ? "Enjoy your delivery :)" : "Your delivery is on its way")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                        }
+
+                        // Progress with moving car
+                        GeometryReader { geo in
+                            let width = geo.size.width
+                            let barHeight: CGFloat = 6
+                            let carWidth: CGFloat = 18
+                            let normalizedProgress = Double(context.state.progress) / 100.0
+                            let carX = normalizedProgress * max(0, width - carWidth)
+
+                            ZStack(alignment: .leading) {
+                                // Track
+                                Capsule()
+                                    .fill(Color.gray.opacity(0.25))
+                                    .frame(height: barHeight)
+                                // Fill
+                                Capsule()
+                                    .fill(LinearGradient(gradient: Gradient(colors: [Color.gray.opacity(0.7), Color.gray.opacity(0.55)]), startPoint: .leading, endPoint: .trailing))
+                                    .frame(width: max(normalizedProgress * width, 4), height: barHeight)
+                                    .animation(.easeInOut(duration: 0.4), value: normalizedProgress)
+                                // Car on top of fill
+                                Image("moving_car")
+                                    .renderingMode(.template)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: carWidth, height: carWidth)
+                                    .foregroundColor(.white)
+                                    .offset(x: carX)
+                                    .animation(.easeInOut(duration: 0.4), value: normalizedProgress)
+                                    .shadow(color: Color.black.opacity(0.15), radius: 1, y: 0.5)
+                            }
+                        }
+                        .frame(height: 18)
+
+                        // Footer
+                        HStack(alignment: .center) {
+                            Text("\(context.state.progress)%")
+                                .font(.caption2)
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            HStack(spacing: 4) {
+                                Image(systemName: "clock")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                                let mins = max(1, context.state.minutesToDelivery)
+                                Text(mins == 1 ? "1 minute" : "\(mins) minutes")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
                 }
 
                 DynamicIslandExpandedRegion(.trailing) {
-     
                 }
 
-                DynamicIslandExpandedRegion(.bottom) { }
+                DynamicIslandExpandedRegion(.bottom) {
+               
+                }
             } compactLeading: {
                 Image(systemName: "bag.fill")
                     .resizable()
