@@ -57,27 +57,19 @@ The app simulates a **delivery tracking experience** with real-time progress upd
 
 ### 📱 Flutter App Interface
 
-<div align="center">
-
 | Flutter App | Live Activity Progress |
-|-------------|------------------------|
-| ![Flutter Interface](screenshots/Simulator%20Screenshot%20-%20iPhone%2017%20Pro%20-%202025-10-31%20at%2017.05.18.png) | ![Progress Tracking](screenshots/Simulator%20Screenshot%20-%20iPhone%2017%20Pro%20-%202025-10-31%20at%2017.10.11.png) |
-
-</div>
+|:----------:|:----------------------:|
+| ![Flutter App Interface](screenshots/Simulator%20Screenshot%20-%20iPhone%2017%20Pro%20-%202025-10-31%20at%2017.05.18.png) | ![Live Activity Progress](screenshots/Simulator%20Screenshot%20-%20iPhone%2017%20Pro%20-%202025-10-31%20at%2017.10.11.png) |
 
 ### 🍎 iOS Dynamic Island & Live Activities
 
-<div align="center">
-
 | Dynamic Island Preview | Expanded Live Activity |
-|------------------------|------------------------|
-| ![Dynamic Island Preview](screenshots/step_4_preview_2.png) | ![Expanded View](screenshots/step_4_expanded.png) |
+|:----------------------:|:---------------------:|
+| ![Dynamic Island Preview](screenshots/step_4_preview_2.png) | ![Expanded Live Activity](screenshots/step_4_expanded.png) |
 
-| Live Activity Complete | Lock Screen View |
-|------------------------|------------------|
-| ![Delivery Complete](screenshots/Simulator%20Screenshot%20-%20iPhone%2017%20Pro%20-%202025-10-31%20at%2017.10.24.png) | ![Lock Screen Integration](screenshots/how_to_access_canva.png) |
-
-</div>
+| Live Activity Complete | Group Overview |
+|:---------------------:|:--------------:|
+| ![Live Activity Complete](screenshots/Simulator%20Screenshot%20-%20iPhone%2017%20Pro%20-%202025-10-31%20at%2017.10.24.png) | ![Group Overview](screenshots/Group%202.png) |
 
 ### 🤖 Android Rich Notifications
 
@@ -431,4 +423,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ---
 
 **Note**: This project demonstrates advanced cross-platform integration techniques for Live Activities. The implementation provides a solid foundation for production applications requiring real-time notifications and Live Activity features across both major mobile platforms.
+# FlutterByte2025-Live-Acitivity-for-Android-and-iOS-flutter
 # FlutterByte2025-Live-Acitivity-for-Android-and-iOS-flutter
