@@ -427,11 +427,6 @@ xcrun simctl spawn booted log stream --predicate 'subsystem contains "ActivityKi
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 👨‍💻 Author
-
-**FlutterByte2025 Team**
-- Repository: [CreativeToby02/live-activity-app](https://github.com/CreativeToby02/live-activity-app)
-- Branch: `rufai_ios_dynamic_island_widget_kit`
 
 ---
 
